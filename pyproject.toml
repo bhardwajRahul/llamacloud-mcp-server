@@ -14,11 +14,10 @@ description = "Expose LlamaCloud services as MCP tools"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-  "llama-index-indices-managed-llama-cloud>=0.6.9",
+  "llama-cloud>=1.0,<2.0",
+  "llama-index-core>=0.12.0",
   "mcp[cli]>=1.6.0",
   "python-dotenv>=1.1.0",
-  "llama-index-tools-mcp>=0.1.0",
-  "llama-cloud-services",
   "click"
 ]
 license = "MIT"
@@ -31,8 +30,7 @@ keywords = [
   "mcp",
   "llama",
   "llamacloud",
-  "llama-cloud",
-  "llama-cloud-services"
+  "llama-cloud"
 ]
 
 [project.scripts]
