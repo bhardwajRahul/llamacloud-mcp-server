@@ -2,8 +2,8 @@ import click
 import os
 
 from mcp.server.fastmcp import Context, FastMCP
-from llama_cloud_services import LlamaExtract
-from llama_index.indices.managed.llama_cloud import LlamaCloudIndex
+from llama_cloud import AsyncLlamaCloud
+from llama_cloud.lib.index import LlamaCloudIndex
 from typing import Awaitable, Callable, Optional
 
 
@@ -39,13 +39,36 @@ def make_extract_tool(
             await ctx.info(
                 f"Extracting data using agent: {agent_name} with file path: {file_path}"
             )
-            llama_extract = LlamaExtract(
+            client = AsyncLlamaCloud()
+
+            # Find the extraction agent by name
+            agents = await client.extraction.extraction_agents.list(
                 organization_id=org_id,
                 project_id=project_id,
             )
-            extract_agent = llama_extract.get_agent(name=agent_name)
-            result = await extract_agent.aextract(file_path)
-            return str(result)
+
+            agent_id = None
+            for agent in agents:
+                if agent.name == agent_name:
+                    agent_id = agent.id
+                    break
+
+            if agent_id is None:
+                raise ValueError(f"Extraction agent '{agent_name}' not found")
+
+            # Upload file
+            file_obj = await client.files.create(
+                file=file_path,
+                purpose="extract",
+            )
+
+            # Extract and wait for result
+            result = await client.extraction.jobs.extract(
+                extraction_agent_id=agent_id,
+                file_id=file_obj.id,
+            )
+
+            return str(result.data)
         except Exception as e:
             await ctx.error(f"Error extracting data: {str(e)}")
             return f"Error extracting data: {str(e)}"
