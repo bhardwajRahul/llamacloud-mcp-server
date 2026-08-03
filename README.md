@@ -1,3 +1,6 @@
+> [!CAUTION]
+> This repo has been archived and is no longer supported. Please see [our docs](https://developers.llamaindex.ai/for-agents/) for the latest on connecting your agents to LlamaParse Platform APIs.
+
 # LlamaIndex MCP demos
 
 `llamacloud-mcp` is a tool that allows you to use LlamaCloud as an MCP server. It can be used to query LlamaCloud indexes and extract data from files.
